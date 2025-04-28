@@ -1,16 +1,14 @@
-import { spawn } from "node:child_process";
+import { fork } from "node:child_process";
 import path from "node:path";
 
 const spawnChildProcess = async (args) => {
   if (!args) return;
 
   const filePath = path.join(import.meta.dirname, "files", "script.js");
-  const sp = spawn("node", [filePath, ...args]);
+  const sp = fork(filePath, args, { stdio: ["pipe", "pipe", "ipc"] });
 
-  sp.stdout.on("data", (chunk) => process.stdout.write(chunk));
-  process.stdin.on("data", (data) => sp.stdin.write(data));
-
-  sp.on("close", () => process.exit());
+  process.stdin.pipe(sp.stdin);
+  sp.stdout.pipe(process.stdout);
 };
 
 // Put your arguments in function call to test this functionality
