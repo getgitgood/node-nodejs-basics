@@ -1,4 +1,4 @@
-import { fork } from "node:child_process";
+import { fork, spawn } from "node:child_process";
 import path from "node:path";
 
 const spawnChildProcess = async (args) => {
@@ -6,7 +6,7 @@ const spawnChildProcess = async (args) => {
 
   const filePath = path.join(import.meta.dirname, "files", "script.js");
 
-  fork(filePath, args, { stdio: ["inherit", "inherit", "ipc"] });
+  spawn('node', [filePath, ...args], { stdio: ["inherit", "inherit", "ipc"] });
 };
 
 // Put your arguments in function call to test this functionality
